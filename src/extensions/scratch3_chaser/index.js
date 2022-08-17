@@ -83,6 +83,21 @@ const CHaserLook = {
     ITEM: 3
 }
 
+
+/**
+ * Class for CHaser Client
+ */
+class CHaserClient {
+    constructor () {
+
+    }
+
+    getReady() {
+        log.log("getReady")
+        return [0,0,0,0,0,0,0,0,0]
+    }
+}
+
 /**
  * Class for the new blocks in Scratch 3.0
  * @param {Runtime} runtime - the runtime instantiating this block package.
@@ -95,6 +110,8 @@ class Scratch3CHaser {
          * @type {Runtime}
          */
         this.runtime = runtime;
+
+        this.client = new CHaserClient()
 
         //this._onTargetCreated = this._onTargetCreated.bind(this);
         //this.runtime.on('targetWasCreated', this._onTargetCreated);
@@ -222,9 +239,9 @@ class Scratch3CHaser {
                 {
                     opcode: 'isValueEqual',
                     blockType: BlockType.BOOLEAN,
-                    text: '[VALUES] のマスが [CELL_TYPE]',
+                    text: '[DIRECTION] のマスが [CELL_TYPE]',
                     arguments: {
-                        VALUES: {
+                        DIRECTION: {
                             type: ArgumentType.NUMBER,
                             menu: 'valueDirection',
                             defaultValue: CHaserDirection.UP
@@ -319,13 +336,33 @@ class Scratch3CHaser {
     }
 
     /**
-     * Write log.
-     * @param {object} args - the block arguments.
-     * @property {number} TEXT - the text.
+     * Do getReady.
      */
-    writeLog (args) {
-        const text = Cast.toString(args.TEXT);
-        log.log(text);
+    getReady () {
+        this.values = this.client.getReady()
+        log.log(this.values);
+    }
+
+    /**
+     * Return True if a value around the bot equal to specified cell type.
+     * @param {object} args - the arguments.
+     * @property {number} DIRECTION - the direction.
+     * @property {number} CELL_TYPE - the cell type.
+     */
+     isValueEqual (args) {
+        const direction = Cast.toNumber(args.DIRECTION);
+        const cell_type = Cast.toNumber(args.CELL_TYPE);
+        return this.values[direction] == cell_type;
+     }
+
+    /**
+     * Walk
+     * @param {object} args - the arguments.
+     * @property {number} DIRECTION - the direction.
+     */
+    walk (args) {
+        const command = Cast.toString(args.DIRECTION);
+        log.log(command);
     }
 
     /**
