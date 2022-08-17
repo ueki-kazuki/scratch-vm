@@ -237,30 +237,6 @@ class Scratch3NewBlocks {
                     }
                 },
                 {
-                    opcode: 'getValue',
-                    blockType: BlockType.REPORTER,
-                    text: '[VALUES] のマス',
-                    arguments: {
-                        VALUES: {
-                            type: ArgumentType.NUMBER,
-                            menu: 'valueDirection',
-                            defaultValue: 1
-                        }
-                    }
-                },
-                {
-                    opcode: 'getCellType',
-                    blockType: BlockType.REPORTER,
-                    text: '[CELL_TYPE]',
-                    arguments: {
-                        CELL_TYPE: {
-                            type: ArgumentType.NUMBER,
-                            menu: 'cellType',
-                            defaultValue: 2
-                        }
-                    }
-                },
-                {
                     opcode: 'walk',
                     blockType: BlockType.COMMAND,
                     text: '[DIRECTION] に歩く',
