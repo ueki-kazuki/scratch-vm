@@ -88,7 +88,7 @@ const CHaserLook = {
  * @param {Runtime} runtime - the runtime instantiating this block package.
  * @constructor
  */
-class Scratch3NewBlocks {
+class Scratch3CHaser {
     constructor (runtime) {
         /**
          * The runtime instantiating this block package.
@@ -181,8 +181,8 @@ class Scratch3NewBlocks {
      */
     getInfo () {
         return {
-            id: 'newblocks',
-            name: 'New Blocks',
+            id: 'chaser',
+            name: 'CHaser',
             // menuIconURI: menuIconURI,
             // blockIconURI: blockIconURI,
             blocks: [
@@ -337,4 +337,4 @@ class Scratch3NewBlocks {
     }
 }
 
-module.exports = Scratch3NewBlocks;
+module.exports = Scratch3CHaser;
