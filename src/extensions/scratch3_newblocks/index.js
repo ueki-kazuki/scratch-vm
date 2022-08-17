@@ -32,7 +32,7 @@ const CHaserWalk = {
  * Put command send to CHaser server
  * @type {string}
  */
- const CHaserPut = {
+const CHaserPut = {
     UP: 'pu',
     DOWN: 'pd',
     LEFT: 'pl',
@@ -43,7 +43,7 @@ const CHaserWalk = {
  * Search command send to CHaser server
  * @type {string}
  */
- const CHaserSearch = {
+const CHaserSearch = {
     UP: 'su',
     DOWN: 'sd',
     LEFT: 'sl',
@@ -54,11 +54,33 @@ const CHaserWalk = {
  * Look command send to CHaser server
  * @type {string}
  */
- const CHaserLook = {
+const CHaserLook = {
     UP: 'lu',
     DOWN: 'ld',
     LEFT: 'll',
     RIGHT: 'lr'
+}
+
+/**
+ * Direction
+ * @type {number}
+ */
+ const CHaserDirection = {
+    UP: 1,
+    DOWN: 7,
+    LEFT: 3,
+    RIGHT: 5
+}
+
+/**
+ * Cell Type
+ * @type {number}
+ */
+ const CHaserCellType = {
+    NONE: 0,
+    ENEMY: 1,
+    BLOCK: 2,
+    ITEM: 3
 }
 
 /**
@@ -76,6 +98,34 @@ class Scratch3NewBlocks {
 
         //this._onTargetCreated = this._onTargetCreated.bind(this);
         //this.runtime.on('targetWasCreated', this._onTargetCreated);
+    }
+
+    /**
+     * @return {array} - text and values for each cells types
+     */
+     get CELL_TYPE_MENU () {
+        return [
+            { text: 'なし', value: 0 },
+            { text: '相手', value: 1 },
+            { text: 'ブロック', value: 2 },
+            { text: 'アイテム', value: 3 }
+        ]
+    }
+
+    /**
+     * @return {array} - text and values for each cells element
+     */
+     get VALUE_DIRECTION_MENU () {
+        return [
+            { text: '左上', value: 0 },
+            { text: '上', value: 1 },
+            { text: '右上', value: 2 },
+            { text: '左', value: 3 },
+            { text: '右', value: 5 },
+            { text: '左下', value: 6 },
+            { text: '下', value: 7 },
+            { text: '右下', value: 8 }
+        ]
     }
 
     /**
@@ -137,20 +187,78 @@ class Scratch3NewBlocks {
             // blockIconURI: blockIconURI,
             blocks: [
                 {
-                    opcode: 'writeLog',
+                    opcode: 'setHost',
                     blockType: BlockType.COMMAND,
-                    text: 'log [TEXT]',
+                    text: 'サーバー [HOST] に [BOT_TYPE] で接続する',
                     arguments: {
-                        TEXT: {
+                        HOST: {
                             type: ArgumentType.STRING,
-                            defaultValue: "hello"
+                            defaultValue: '127.0.0.1'
+                        },
+                        BOT_TYPE: {
+                            type: ArgumentType.STRING,
+                            menu: 'botType',
+                            defaultValue: 'Cool'
                         }
                     }
                 },
                 {
-                    opcode: 'getBrowser',
-                    text: 'browser',
-                    blockType: BlockType.REPORTER
+                    opcode: 'setName',
+                    blockType: BlockType.COMMAND,
+                    text: '名前は [NAME] にする',
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'ユーザー１'
+                        }
+                    }
+                },
+                {
+                    opcode: 'getReady',
+                    blockType: BlockType.COMMAND,
+                    text: '準備する'
+
+                },
+                {
+                    opcode: 'isValueEqual',
+                    blockType: BlockType.BOOLEAN,
+                    text: '[VALUES] のマスが [CELL_TYPE]',
+                    arguments: {
+                        VALUES: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'valueDirection',
+                            defaultValue: CHaserDirection.UP
+                        },
+                        CELL_TYPE: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'cellType',
+                            defaultValue: CHaserCellType.BLOCK
+                        }
+                    }
+                },
+                {
+                    opcode: 'getValue',
+                    blockType: BlockType.REPORTER,
+                    text: '[VALUES] のマス',
+                    arguments: {
+                        VALUES: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'valueDirection',
+                            defaultValue: 1
+                        }
+                    }
+                },
+                {
+                    opcode: 'getCellType',
+                    blockType: BlockType.REPORTER,
+                    text: '[CELL_TYPE]',
+                    arguments: {
+                        CELL_TYPE: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'cellType',
+                            defaultValue: 2
+                        }
+                    }
                 },
                 {
                     opcode: 'walk',
@@ -202,20 +310,32 @@ class Scratch3NewBlocks {
                 }
             ],
             menus: {
+                botType: {
+                    acceptReporters: false,
+                    items: ['Cool', 'Hot']
+                },
+                cellType: {
+                    acceptReporters: false,
+                    items: this.CELL_TYPE_MENU
+                },
+                valueDirection: {
+                    acceptReporters: false,
+                    items: this.VALUE_DIRECTION_MENU
+                },
                 walkDirection: {
-                    acceptReporters: true,
+                    acceptReporters: false,
                     items: this.WALK_DIRECTION_MENU
                 },
                 putDirection: {
-                    acceptReporters: true,
+                    acceptReporters: false,
                     items: this.PUT_DIRECTION_MENU
                 },
                 searchDirection: {
-                    acceptReporters: true,
+                    acceptReporters: false,
                     items: this.SEARCH_DIRECTION_MENU
                 },
                 lookDirection: {
-                    acceptReporters: true,
+                    acceptReporters: false,
                     items: this.LOOK_DIRECTION_MENU
                 },
             }
