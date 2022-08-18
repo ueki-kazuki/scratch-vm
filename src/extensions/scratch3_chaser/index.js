@@ -18,50 +18,6 @@ const blockIconURI = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHdpZHRo
 const menuIconURI = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48ZyBpZD0iSUQwLjA4NjgyNDQzOTAwMDMzODMyIiB0cmFuc2Zvcm09Im1hdHJpeCgwLjQ5MTU0NjY2MDY2MTY5NzQsIDAsIDAsIDAuNDkxNTQ2NjYwNjYxNjk3NCwgLTY0LjUsIC03Ny4yNSkiPjxwYXRoIGlkPSJJRDAuNTcyMTQ2MjMwMzc3MjU2OSIgZmlsbD0iI0ZGOTQwMCIgc3Ryb2tlPSJub25lIiBkPSJNIDE4OCAxNDEgTCAyNTAgMTQxIEwgMjUwIDIwMyBMIDE4OCAyMDMgTCAxODggMTQxIFogIiB0cmFuc2Zvcm09Im1hdHJpeCgxLjI4NzkwMzMwODg2ODQwODIsIDAsIDAsIDEuMjg3OTAzMzA4ODY4NDA4MiwgLTExMC45LCAtMjQuNCkiLz48cGF0aCBpZD0iSUQwLjYzODMzNjEzNTA3NDQ5NjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIGQ9Ik0gMTk2IDIwNCBDIDE5NiAyMDQgMTkyLjcwNiAxOTAuMDU4IDE5MyAxODMgQyAxOTMuMDc0IDE4MS4yMzYgMTk1Ljg4NiAxNzguNDU4IDE5NyAxODAgQyAyMDEuNDU1IDE4Ni4xNjggMjAzLjQ0MyAyMDMuNzU0IDIwNiAyMDEgQyAyMDkuMjExIDE5Ny41NDIgMjEwIDE2NiAyMTAgMTY2ICIgdHJhbnNmb3JtPSJtYXRyaXgoMSwgMCwgMCwgMSwgLTU3LCAxNS44KSIvPjxwYXRoIGlkPSJJRDAuNzU4NzMwMzU2NTgxNTA5MSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgZD0iTSAyMTUgMTY5IEMgMjE1IDE2OSAyMTguMzY3IDE2OS41MzQgMjIwIDE3MCBDIDIyMC43MTYgMTcwLjIwNSAyMjEuMjc4IDE3MC44MTkgMjIyIDE3MSBDIDIyMi42NDYgMTcxLjE2MiAyMjMuMzY4IDE3MC43ODkgMjI0IDE3MSBDIDIyNC40NDcgMTcxLjE0OSAyMjUgMTcyIDIyNSAxNzIgIiB0cmFuc2Zvcm09Im1hdHJpeCgxLCAwLCAwLCAxLCAtNTcsIDE1LjgpIi8+PHBhdGggaWQ9IklEMC4yNDM2NzMwNzMxMjc4NjU4IiBmaWxsPSJub25lIiBzdHJva2U9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBkPSJNIDIyNyAxNTQgQyAyMjcgMTU0IDIxOC41NTUgMTQ3Ljg5MCAyMTcgMTUxIEMgMjEyLjM0NSAxNjAuMzEwIDIxMS4yODkgMTcxLjczMyAyMTMgMTgyIEMgMjEzLjYxMiAxODUuNjcyIDIyMyAxODcgMjIzIDE4NyAiIHRyYW5zZm9ybT0ibWF0cml4KDEsIDAsIDAsIDEsIC01NywgMTUuOCkiLz48cGF0aCBpZD0iSUQwLjc5MzkzOTQ4MTk1NTAyMTYiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0ZGRkZGRiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIGQ9Ik0gMTc1IDIwMC41MDAgQyAxNzUgMjAwLjUwMCAxNjkuODA1IDIyMS45MTMgMTcxIDIyMi43NTAgQyAxNzIuMTk1IDIyMy41ODcgMTc4Ljc5NSAyMDUuMjk1IDE4Mi41MDAgMjA1Ljc1MCBDIDE4NS45MjAgMjA2LjE3MCAxODEuODU5IDIyNC41MDAgMTg1LjI1MCAyMjQuNTAwIEMgMTg5LjIxMyAyMjQuNTAwIDE5Ny4yNTAgMjA1Ljc1MCAxOTcuMjUwIDIwNS43NTAgIi8+PC9nPjwvc3ZnPg==';
 
 /**
- * Walk command send to CHaser server
- * @type {string}
- */
-const CHaserWalk = {
-    UP: 'wu',
-    DOWN: 'wd',
-    LEFT: 'wl',
-    RIGHT: 'wr'
-}
-
-/**
- * Put command send to CHaser server
- * @type {string}
- */
-const CHaserPut = {
-    UP: 'pu',
-    DOWN: 'pd',
-    LEFT: 'pl',
-    RIGHT: 'pr'
-}
-
-/**
- * Search command send to CHaser server
- * @type {string}
- */
-const CHaserSearch = {
-    UP: 'su',
-    DOWN: 'sd',
-    LEFT: 'sl',
-    RIGHT: 'sr'
-}
-
-/**
- * Look command send to CHaser server
- * @type {string}
- */
-const CHaserLook = {
-    UP: 'lu',
-    DOWN: 'ld',
-    LEFT: 'll',
-    RIGHT: 'lr'
-}
-
-/**
  * Direction
  * @type {number}
  */
@@ -93,8 +49,31 @@ class CHaserClient {
     }
 
     getReady() {
-        log.log("getReady")
-        return [0,0,0,0,0,0,0,0,0]
+        log.log("getReady");
+        return [0,0,0,0,0,0,0,0,0];
+    }
+
+    send(command) {
+        log.log(command);
+        return [2,0,2,0,0,0,2,0,2];
+    }
+
+    walk(direction) {
+        command = direction == 1 ? 'wu'
+                : direction == 3 ? 'wl'
+                : direction == 5 ? 'wr'
+                : direction == 7 ? 'wd'
+                : 'error';
+        return this.send(command);
+    }
+
+    put(direction) {
+        command = direction == 1 ? 'pu'
+                : direction == 3 ? 'pl'
+                : direction == 5 ? 'pr'
+                : direction == 7 ? 'pd'
+                : 'error';
+        return this.send(command);
     }
 }
 
@@ -132,64 +111,28 @@ class Scratch3CHaser {
     /**
      * @return {array} - text and values for each cells element
      */
-     get VALUE_DIRECTION_MENU () {
+     get DIRECTION_MENU8 () {
         return [
-            { text: '左上', value: 0 },
-            { text: '上', value: 1 },
-            { text: '右上', value: 2 },
-            { text: '左', value: 3 },
-            { text: '右', value: 5 },
-            { text: '左下', value: 6 },
-            { text: '下', value: 7 },
-            { text: '右下', value: 8 }
+            { value: 0, text: '左上' },
+            { value: 1, text: '上' },
+            { value: 2, text: '右上' },
+            { value: 3, text: '左' },
+            { value: 5, text: '右', },
+            { value: 6, text: '左下' },
+            { value: 7, text: '下' },
+            { value: 8, text: '右下' }
         ]
     }
 
     /**
      * @return {array} - text and values for each walk action menu element
      */
-    get WALK_DIRECTION_MENU () {
+    get DIRECTION_MENU4 () {
         return [
-            { text: '上', value: 'wu' },
-            { text: '下', value: 'wd' },
-            { text: '左', value: 'wl' },
-            { text: '右', value: 'wr' }
-        ]
-    }
-
-    /**
-     * @return {array} - text and values for each put action menu element
-     */
-    get PUT_DIRECTION_MENU () {
-        return [
-            { text: '上', value: 'pu' },
-            { text: '下', value: 'pd' },
-            { text: '左', value: 'pl' },
-            { text: '右', value: 'pr' }
-        ]
-    }
-
-    /**
-     * @return {array} - text and values for each search action menu element
-     */
-     get SEARCH_DIRECTION_MENU () {
-        return [
-            { text: '上', value: 'su' },
-            { text: '下', value: 'sd' },
-            { text: '左', value: 'sl' },
-            { text: '右', value: 'sr' }
-        ]
-    }
-
-    /**
-     * @return {array} - text and values for each look action menu element
-     */
-     get LOOK_DIRECTION_MENU () {
-        return [
-            { text: '上', value: 'lu' },
-            { text: '下', value: 'ld' },
-            { text: '左', value: 'll' },
-            { text: '右', value: 'lr' }
+            { value: 1, text: '上' },
+            { value: 3, text: '左' },
+            { value: 5, text: '右' },
+            { value: 7, text: '下' }
         ]
     }
 
@@ -243,7 +186,7 @@ class Scratch3CHaser {
                     arguments: {
                         DIRECTION: {
                             type: ArgumentType.NUMBER,
-                            menu: 'valueDirection',
+                            menu: 'direction8',
                             defaultValue: CHaserDirection.UP
                         },
                         CELL_TYPE: {
@@ -259,9 +202,9 @@ class Scratch3CHaser {
                     text: '[DIRECTION] に歩く',
                     arguments: {
                         DIRECTION: {
-                            type: ArgumentType.STRING,
-                            menu: 'walkDirection',
-                            defaultValue: CHaserWalk.UP
+                            type: ArgumentType.NUMBER,
+                            menu: 'direction4',
+                            defaultValue: CHaserDirection.UP
                         }
                     }
                 },
@@ -271,9 +214,9 @@ class Scratch3CHaser {
                     text: '[DIRECTION] にブロックを置く',
                     arguments: {
                         DIRECTION: {
-                            type: ArgumentType.STRING,
-                            menu: 'putDirection',
-                            defaultValue: CHaserPut.UP
+                            type: ArgumentType.NUMBER,
+                            menu: 'direction4',
+                            defaultValue: CHaserDirection.UP
                         }
                     }
                 },
@@ -283,9 +226,9 @@ class Scratch3CHaser {
                     text: '[DIRECTION] の直線方向を調べる',
                     arguments: {
                         DIRECTION: {
-                            type: ArgumentType.STRING,
-                            menu: 'searchDirection',
-                            defaultValue: CHaserSearch.UP
+                            type: ArgumentType.NUMBER,
+                            menu: 'direction4',
+                            defaultValue: CHaserDirection.UP
                         }
                     }
                 },
@@ -295,9 +238,9 @@ class Scratch3CHaser {
                     text: '[DIRECTION] の正方形範囲を調べる',
                     arguments: {
                         DIRECTION: {
-                            type: ArgumentType.STRING,
-                            menu: 'lookDirection',
-                            defaultValue: CHaserLook.UP
+                            type: ArgumentType.NUMBER,
+                            menu: 'direction4',
+                            defaultValue: CHaserDirection.UP
                         }
                     }
                 }
@@ -311,26 +254,14 @@ class Scratch3CHaser {
                     acceptReporters: false,
                     items: this.CELL_TYPE_MENU
                 },
-                valueDirection: {
+                direction8: {
                     acceptReporters: false,
-                    items: this.VALUE_DIRECTION_MENU
+                    items: this.DIRECTION_MENU8
                 },
-                walkDirection: {
+                direction4: {
                     acceptReporters: false,
-                    items: this.WALK_DIRECTION_MENU
-                },
-                putDirection: {
-                    acceptReporters: false,
-                    items: this.PUT_DIRECTION_MENU
-                },
-                searchDirection: {
-                    acceptReporters: false,
-                    items: this.SEARCH_DIRECTION_MENU
-                },
-                lookDirection: {
-                    acceptReporters: false,
-                    items: this.LOOK_DIRECTION_MENU
-                },
+                    items: this.DIRECTION_MENU4
+                }
             }
         };
     }
@@ -349,9 +280,14 @@ class Scratch3CHaser {
      * @property {number} DIRECTION - the direction.
      * @property {number} CELL_TYPE - the cell type.
      */
-     isValueEqual (args) {
+    isValueEqual (args) {
         const direction = Cast.toNumber(args.DIRECTION);
         const cell_type = Cast.toNumber(args.CELL_TYPE);
+
+        if (typeof(this.values) == "undefined") {
+            return false;
+        }
+
         return this.values[direction] == cell_type;
      }
 
@@ -361,7 +297,19 @@ class Scratch3CHaser {
      * @property {number} DIRECTION - the direction.
      */
     walk (args) {
-        const command = Cast.toString(args.DIRECTION);
+        const direction = Cast.toNumber(args.DIRECTION);
+        this.client.walk(direction);
+        log.log(command);
+    }
+
+    /**
+     * Put
+     * @param {object} args - the arguments.
+     * @property {number} DIRECTION - the direction.
+     */
+    put (args) {
+        const direction = Cast.toNumber(args.DIRECTION);
+        this.client.put(direction);
         log.log(command);
     }
 
