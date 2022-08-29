@@ -2,6 +2,7 @@ const ArgumentType = require('../../extension-support/argument-type');
 const BlockType = require('../../extension-support/block-type');
 const Cast = require('../../util/cast');
 const log = require('../../util/log');
+const net = require('net');
 
 /**
  * Icon svg to be displayed at the left edge of each extension block, encoded as a data URI.
@@ -44,17 +45,68 @@ const menuIconURI = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHdpZHRoP
  * Class for CHaser Client
  */
 class CHaserClient {
-    constructor () {
 
+    constructor () {
+        this.isConnected = false;
+        this.response = "";
     }
 
+    // https://qiita.com/Zumwalt/items/060ae7654c9dfe538ee7
+    connect(host, port) {
+        //. 接続先 IP アドレスとポート番号
+        var host = 'localhost';
+        var port = 8080;
+        var name = 'user1';
+
+        //. 接続
+        const client = new WebSocket("ws://localhost:8080/ws");
+        //接続通知
+        client.onopen = function(event) {
+            console.log( '接続: ' + host + ':' + port );
+            console.log(event);
+            // this == WebSocket
+            //this.send('host: ' + host);
+            //this.send('port: ' + port);
+            //this.send('name: ' + name);
+            this.send('connect');
+        };
+        client.onerror = function(error){
+            console.log('onerror: ' + error);
+        };
+        client.onmessage = this._socketMessageCallback;
+
+        //. 接続が切断されたら、その旨をメッセージで表示する
+        client.onclose = function(){
+            console.log('切断');
+        }
+
+        this.client = client
+        this.isConnected = true
+    }
+
+    _socketMessageCallback (event){
+        console.log('onmessage: ' + event.data);
+        console.log(event);
+        this.response = event.data;
+    };
+
     getReady() {
+        if (!this.isConnected) {
+            return []
+        }
         log.log("getReady");
+        this.client.send('gr');
+        console.log('gr: ' + this.response);
         return [0,0,0,0,0,0,0,0,0];
     }
 
     send(command) {
         log.log(command);
+        if (!this.isConnected) {
+            return []
+        }
+        this.client.send(command);
+        console.log(command + ': ' + this.response);
         return [2,0,2,0,0,0,2,0,2];
     }
 
@@ -147,7 +199,7 @@ class Scratch3CHaser {
             // blockIconURI: blockIconURI,
             blocks: [
                 {
-                    opcode: 'setHost',
+                    opcode: 'connect',
                     blockType: BlockType.COMMAND,
                     text: 'サーバー [HOST] に [BOT_TYPE] で接続する',
                     arguments: {
@@ -155,9 +207,9 @@ class Scratch3CHaser {
                             type: ArgumentType.STRING,
                             defaultValue: '127.0.0.1'
                         },
-                        BOT_TYPE: {
-                            type: ArgumentType.STRING,
-                            menu: 'botType',
+                        PORT: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'port',
                             defaultValue: 'Cool'
                         }
                     }
@@ -246,9 +298,12 @@ class Scratch3CHaser {
                 }
             ],
             menus: {
-                botType: {
+                port: {
                     acceptReporters: false,
-                    items: ['Cool', 'Hot']
+                    items: [
+                        {text:'Cool', value: 2009},
+                        {text:'Hot', value: 2010}
+                    ]
                 },
                 cellType: {
                     acceptReporters: false,
@@ -264,6 +319,19 @@ class Scratch3CHaser {
                 }
             }
         };
+    }
+
+    /**
+     * Connect to CHaser server.
+     * @param {object} args - the arguments.
+     * @property {number} HOST - hostname or ip address for CHaser server.
+     * @property {number} PORT - the port number.
+     */
+    connect (args) {
+        const host = Cast.toString(args.HOST);
+        const port = Cast.toNumber(args.PORT);
+        log.log(host, port);
+        this.client.connect(host, port);
     }
 
     /**
