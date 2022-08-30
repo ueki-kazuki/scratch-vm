@@ -218,24 +218,17 @@ class Scratch3CHaser {
                 {
                     opcode: 'connect',
                     blockType: BlockType.COMMAND,
-                    text: 'サーバー [HOST] に [BOT_TYPE] で接続する',
+                    text: 'サーバー [HOST] に [BOT_TYPE] [NAME] という名前で接続する',
                     arguments: {
                         HOST: {
                             type: ArgumentType.STRING,
                             defaultValue: '127.0.0.1'
                         },
-                        PORT: {
+                        BOT_TYPE: {
                             type: ArgumentType.NUMBER,
                             menu: 'port',
                             defaultValue: 'Cool'
-                        }
-                    }
-                },
-                {
-                    opcode: 'setName',
-                    blockType: BlockType.COMMAND,
-                    text: '名前は [NAME] にする',
-                    arguments: {
+                        },
                         NAME: {
                             type: ArgumentType.STRING,
                             defaultValue: 'ユーザー１'
