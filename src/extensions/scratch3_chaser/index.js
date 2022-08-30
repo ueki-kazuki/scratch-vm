@@ -47,61 +47,66 @@ const menuIconURI = 'data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHdpZHRoP
 class CHaserClient {
 
     constructor () {
-        this.isConnected = false;
         this.response = "";
+        this.values = [];
         this.websocketPromises = [];
+
+        // this をCHaserClientのインスタンスにbind
+        this.newSocketCallback = this.newSocketCallback.bind(this);
+        this.initCallback = this.initCallback.bind(this);
+        this.sendCallback = this.sendCallback.bind(this);
+        this.messageCallback = this.messageCallback.bind(this);
     }
 
     // https://qiita.com/Zumwalt/items/060ae7654c9dfe538ee7
-    connect(host, port) {
-        //. 接続先 IP アドレスとポート番号
-        var host = '127.0.0.1';
-        var port = 2009;
-        var name = 'user1';
-
+    connect(host, port, name) {
         //. 接続
-        const client = new WebSocket("ws://localhost:8080/ws");
-        //接続通知
-        client.onopen = function(event) {
-            console.log( '接続: ' + host + ':' + port );
+        const p = new Promise(this.newSocketCallback)
+        p.then((event) => {
+            this.client = event.target;
+            console.log( '接続: ' + host + ':' + port + ':' + name);
             console.log(event);
-            this.send(['connect', host, port, name].join(" "));
-        };
-        client.onerror = function(error){
+            this.client.send(['connect', host, port, name].join(" "));
+
+            //. 接続が切断されたら、その旨をメッセージで表示する
+            this.client.onclose = function(){
+                console.log('切断');
+            }
+        }).catch((error) => {
             console.log('onerror: ' + error);
-        };
-        //. 接続が切断されたら、その旨をメッセージで表示する
-        client.onclose = function(){
-            console.log('切断');
-        }
-
-        // this をCHaserClientのインスタンスにbind
-        this.initCallback = this.initCallback.bind(this)
-        this.sendCallback = this.sendCallback.bind(this)
-        this.messageCallback = this.messageCallback.bind(this)
-
-        this.client = client
-        this.isConnected = true
+        });
+        return p;
     }
 
     getReady() {
-        if (!this.isConnected) {
-            return []
-        }
-        log.log("getReady");
-        this.client.send('gr');
-        console.log('gr: ' + this.response);
-        return this.response;
+        const p = new Promise((resolve) => {
+            this.websocketPromises.push(resolve);
+            this.client.send("gr");
+            this.client.onmessage = this.messageCallback;
+        })
+            .then(this.sendCallback);
+        const values = this.response.split("")
+        this.values = values.slice(1);
+        return p;
     }
 
-    send(command) {
+    getValues() {
+        return this.values;
+    }
+
+    _send(command) {
         log.log(command);
-        if (!this.isConnected) {
-            return []
-        }
-        new Promise(this.initCallback)
+        const p = new Promise(this.initCallback)
             .then(this.sendCallback);
-        return this.response;
+        const values = this.response.split("")
+        this.values = values.slice(1);
+        return p;
+    }
+
+    newSocketCallback(resolve, reject) {
+        this.client = new WebSocket("ws://localhost:8080/ws");
+        this.client.addEventListener('open', resolve);
+        this.client.addEventListener('error', reject);
     }
 
     initCallback(resolve) {
@@ -113,7 +118,7 @@ class CHaserClient {
     messageCallback(event) {
         console.log('messageCallback: ' + event);
         if (event.data[0] == '0') {
-            this.isConnected = false;
+            this.client.close();
         }
         this.response = event.data;
         for(i = 0; i < this.websocketPromises.length; i++) {
@@ -133,7 +138,7 @@ class CHaserClient {
                 : direction == 5 ? 'wr'
                 : direction == 7 ? 'wd'
                 : 'error';
-        return this.send(command);
+        return this._send(command);
     }
 
     put(direction) {
@@ -142,7 +147,7 @@ class CHaserClient {
                 : direction == 5 ? 'pr'
                 : direction == 7 ? 'pd'
                 : 'error';
-        return this.send(command);
+        return this._send(command);
     }
 }
 
@@ -218,16 +223,16 @@ class Scratch3CHaser {
                 {
                     opcode: 'connect',
                     blockType: BlockType.COMMAND,
-                    text: 'サーバー [HOST] に [BOT_TYPE] [NAME] という名前で接続する',
+                    text: 'サーバー [HOST] に [PORT] [NAME] という名前で接続する',
                     arguments: {
                         HOST: {
                             type: ArgumentType.STRING,
                             defaultValue: '127.0.0.1'
                         },
-                        BOT_TYPE: {
+                        PORT: {
                             type: ArgumentType.NUMBER,
                             menu: 'port',
-                            defaultValue: 'Cool'
+                            defaultValue: 2009
                         },
                         NAME: {
                             type: ArgumentType.STRING,
@@ -333,23 +338,30 @@ class Scratch3CHaser {
 
     /**
      * Connect to CHaser server.
+     * CHaserサーバーへのconnectが終わるまでブロックの進行を待ちたいためPromiseオブジェクトを返す
      * @param {object} args - the arguments.
-     * @property {number} HOST - hostname or ip address for CHaser server.
+     * @property {string} HOST - hostname or ip address for CHaser server.
      * @property {number} PORT - the port number.
+     * @property {string} NAME - username.
+     * @return {Promise} A promise that will resolve when getReady is complete.
      */
     connect (args) {
         const host = Cast.toString(args.HOST);
         const port = Cast.toNumber(args.PORT);
-        log.log(host, port);
-        this.client.connect(host, port);
+        const name = Cast.toString(args.NAME);
+        log.log(host, port, name);
+        return this.client.connect(host, port, name);
     }
 
     /**
      * Do getReady.
+     * getReady()が終わるまでブロックの進行を待ちたいためPromiseオブジェクトを返す
+     * @return {Promise} A promise that will resolve when getReady is complete.
      */
     getReady () {
-        this.values = this.client.getReady()
-        log.log(this.values);
+        const promise = this.client.getReady()
+        this.values = this.client.getValues()
+        return promise;
     }
 
     /**
@@ -357,6 +369,7 @@ class Scratch3CHaser {
      * @param {object} args - the arguments.
      * @property {number} DIRECTION - the direction.
      * @property {number} CELL_TYPE - the cell type.
+     * @return {boolean}
      */
     isValueEqual (args) {
         const direction = Cast.toNumber(args.DIRECTION);
@@ -365,30 +378,39 @@ class Scratch3CHaser {
         if (typeof(this.values) == "undefined") {
             return false;
         }
+        const theCell = parseInt(this.values[direction]);
+        log.log(this.values, direction, theCell, cell_type);
+        log.log(theCell === cell_type);
 
-        return this.values[direction] == cell_type;
+        return theCell === cell_type;
      }
 
     /**
      * Walk
+     * 行動が終わるまでブロックの進行を待ちたいためPromiseオブジェクトを返す
      * @param {object} args - the arguments.
      * @property {number} DIRECTION - the direction.
+     * @return {Promise} A promise that will resolve when Walk is complete.
      */
     walk (args) {
         const direction = Cast.toNumber(args.DIRECTION);
-        this.client.walk(direction);
-        log.log(command);
+        const promise = this.client.walk(direction);
+        this.values = this.client.getValues();
+        return promise;
     }
 
     /**
      * Put
+     * 行動が終わるまでブロックの進行を待ちたいためPromiseオブジェクトを返す
      * @param {object} args - the arguments.
      * @property {number} DIRECTION - the direction.
+     * @return {Promise} A promise that will resolve when Put is complete.
      */
     put (args) {
         const direction = Cast.toNumber(args.DIRECTION);
-        this.client.put(direction);
-        log.log(command);
+        const promise = this.client.put(direction);
+        this.values = this.client.getValues();
+        return promise;
     }
 
     /**
