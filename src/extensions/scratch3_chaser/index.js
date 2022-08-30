@@ -49,13 +49,14 @@ class CHaserClient {
     constructor () {
         this.isConnected = false;
         this.response = "";
+        this.websocketPromises = [];
     }
 
     // https://qiita.com/Zumwalt/items/060ae7654c9dfe538ee7
     connect(host, port) {
         //. 接続先 IP アドレスとポート番号
-        var host = 'localhost';
-        var port = 8080;
+        var host = '127.0.0.1';
+        var port = 2009;
         var name = 'user1';
 
         //. 接続
@@ -64,31 +65,24 @@ class CHaserClient {
         client.onopen = function(event) {
             console.log( '接続: ' + host + ':' + port );
             console.log(event);
-            // this == WebSocket
-            //this.send('host: ' + host);
-            //this.send('port: ' + port);
-            //this.send('name: ' + name);
-            this.send('connect');
+            this.send(['connect', host, port, name].join(" "));
         };
         client.onerror = function(error){
             console.log('onerror: ' + error);
         };
-        client.onmessage = this._socketMessageCallback;
-
         //. 接続が切断されたら、その旨をメッセージで表示する
         client.onclose = function(){
             console.log('切断');
         }
 
+        // this をCHaserClientのインスタンスにbind
+        this.initCallback = this.initCallback.bind(this)
+        this.sendCallback = this.sendCallback.bind(this)
+        this.messageCallback = this.messageCallback.bind(this)
+
         this.client = client
         this.isConnected = true
     }
-
-    _socketMessageCallback (event){
-        console.log('onmessage: ' + event.data);
-        console.log(event);
-        this.response = event.data;
-    };
 
     getReady() {
         if (!this.isConnected) {
@@ -97,7 +91,7 @@ class CHaserClient {
         log.log("getReady");
         this.client.send('gr');
         console.log('gr: ' + this.response);
-        return [0,0,0,0,0,0,0,0,0];
+        return this.response;
     }
 
     send(command) {
@@ -105,9 +99,32 @@ class CHaserClient {
         if (!this.isConnected) {
             return []
         }
+        new Promise(this.initCallback)
+            .then(this.sendCallback);
+        return this.response;
+    }
+
+    initCallback(resolve) {
+        this.websocketPromises.push(resolve);
         this.client.send(command);
-        console.log(command + ': ' + this.response);
-        return [2,0,2,0,0,0,2,0,2];
+        this.client.onmessage = this.messageCallback;
+    }
+
+    messageCallback(event) {
+        console.log('messageCallback: ' + event);
+        if (event.data[0] == '0') {
+            this.isConnected = false;
+        }
+        this.response = event.data;
+        for(i = 0; i < this.websocketPromises.length; i++) {
+            resolve = this.websocketPromises[i];
+            resolve();
+        }
+        this.websocketPromises = [];
+    }
+
+    sendCallback() {
+        console.log('sendCallback: ' + this.response);
     }
 
     walk(direction) {
