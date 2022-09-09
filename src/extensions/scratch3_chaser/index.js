@@ -50,6 +50,7 @@ class CHaserClient {
         this.response = "";
         this.values = [];
         this.websocketPromises = [];
+        this._isGameSet = false;
 
         // this をCHaserClientのインスタンスにbind
         this.newSocketCallback = this.newSocketCallback.bind(this);
@@ -119,6 +120,7 @@ class CHaserClient {
         console.log('messageCallback: ' + event);
         if (event.data[0] == '0') {
             this.client.close();
+            this._isGameSet = true;
         }
         this.response = event.data;
         for(i = 0; i < this.websocketPromises.length; i++) {
@@ -148,6 +150,10 @@ class CHaserClient {
                 : direction == 7 ? 'pd'
                 : 'error';
         return this._send(command);
+    }
+
+    isGameSet() {
+        return this._isGameSet;
     }
 }
 
@@ -223,7 +229,7 @@ class Scratch3CHaser {
                 {
                     opcode: 'connect',
                     blockType: BlockType.COMMAND,
-                    text: 'サーバー [HOST] に [PORT] [NAME] という名前で接続する',
+                    text: 'サーバー [HOST] に [PORT] に [NAME] という名前で接続する',
                     arguments: {
                         HOST: {
                             type: ArgumentType.STRING,
@@ -241,6 +247,11 @@ class Scratch3CHaser {
                     }
                 },
                 {
+                    opcode: 'isGameSet',
+                    blockType: BlockType.BOOLEAN,
+                    text: 'ゲーム終了？'
+                },
+                {
                     opcode: 'getReady',
                     blockType: BlockType.COMMAND,
                     text: '準備する'
@@ -249,7 +260,7 @@ class Scratch3CHaser {
                 {
                     opcode: 'isValueEqual',
                     blockType: BlockType.BOOLEAN,
-                    text: '[DIRECTION] のマスが [CELL_TYPE]',
+                    text: '[DIRECTION] のマスが [CELL_TYPE]？',
                     arguments: {
                         DIRECTION: {
                             type: ArgumentType.NUMBER,
@@ -310,6 +321,16 @@ class Scratch3CHaser {
                             defaultValue: CHaserDirection.UP
                         }
                     }
+                },
+                {
+                    opcode: 'getGameSet',
+                    blockType: BlockType.REPORTER,
+                    text: 'ゲーム終了'
+                },
+                {
+                    opcode: 'getValues',
+                    blockType: BlockType.REPORTER,
+                    text: 'ボット周辺のセル'
                 }
             ],
             menus: {
@@ -365,6 +386,14 @@ class Scratch3CHaser {
     }
 
     /**
+     * Return True if the game is set.
+     * @return {boolean}
+     */
+     isGameSet () {
+        return this.client.isGameSet();
+     }
+
+     /**
      * Return True if a value around the bot equal to specified cell type.
      * @param {object} args - the arguments.
      * @property {number} DIRECTION - the direction.
@@ -411,6 +440,25 @@ class Scratch3CHaser {
         const promise = this.client.put(direction);
         this.values = this.client.getValues();
         return promise;
+    }
+
+    /**
+     * Get a GameSet variable.
+     * @return {boolean} - true if the game is set
+     */
+    getGameSet () {
+        return this.client.isGameSet();
+    }
+
+    /**
+     * Get values arround the bot.
+     * @return {array} - cell values arroud the bot.
+     */
+    getValues () {
+        if (typeof(this.values) == "undefined") {
+            return ""
+        }
+        return this.values.join(",");
     }
 
     /**
