@@ -99,8 +99,6 @@ class CHaserClient {
         log.log(command);
         const p = new Promise(this.initCallback)
             .then(this.sendCallback);
-        const values = this.response.split("")
-        this.values = values.slice(1);
         return p;
     }
 
@@ -123,6 +121,9 @@ class CHaserClient {
             this._isGameSet = true;
         }
         this.response = event.data;
+        const values = this.response.split("")
+        this.values = values.slice(1);
+
         for(i = 0; i < this.websocketPromises.length; i++) {
             resolve = this.websocketPromises[i];
             resolve();
@@ -379,8 +380,10 @@ class Scratch3CHaser {
      * @return {Promise} A promise that will resolve when getReady is complete.
      */
     getReady () {
-        const promise = this.client.getReady()
-        this.values = this.client.getValues()
+        const promise = this.client.getReady();
+        promise.then(() => {
+            this.values = this.client.getValues();
+        });
         return promise;
     }
 
@@ -423,7 +426,9 @@ class Scratch3CHaser {
     walk (args) {
         const direction = Cast.toNumber(args.DIRECTION);
         const promise = this.client.walk(direction);
-        this.values = this.client.getValues();
+        promise.then(() => {
+            this.values = this.client.getValues();
+        });
         return promise;
     }
 
@@ -437,7 +442,9 @@ class Scratch3CHaser {
     put (args) {
         const direction = Cast.toNumber(args.DIRECTION);
         const promise = this.client.put(direction);
-        this.values = this.client.getValues();
+        promise.then(() => {
+            this.values = this.client.getValues();
+        });
         return promise;
     }
 
