@@ -170,8 +170,6 @@ class Scratch3CHaser {
          */
         this.runtime = runtime;
 
-        this.client = new CHaserClient()
-
         //this._onTargetCreated = this._onTargetCreated.bind(this);
         //this.runtime.on('targetWasCreated', this._onTargetCreated);
     }
@@ -371,6 +369,7 @@ class Scratch3CHaser {
         const port = Cast.toNumber(args.PORT);
         const name = Cast.toString(args.NAME);
         log.log(host, port, name);
+        this.client = new CHaserClient()
         return this.client.connect(host, port, name);
     }
 
