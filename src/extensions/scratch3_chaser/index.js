@@ -53,16 +53,16 @@ class CHaserClient {
         this._isGameSet = false;
 
         // this をCHaserClientのインスタンスにbind
-        this.newSocketCallback = this.newSocketCallback.bind(this);
-        this.initCallback = this.initCallback.bind(this);
-        this.sendCallback = this.sendCallback.bind(this);
-        this.messageCallback = this.messageCallback.bind(this);
+        this._newSocketCallback = this._newSocketCallback.bind(this);
+        this._initCallback = this._initCallback.bind(this);
+        this._sendCallback = this._sendCallback.bind(this);
+        this._messageCallback = this._messageCallback.bind(this);
     }
 
     // https://qiita.com/Zumwalt/items/060ae7654c9dfe538ee7
     connect(host, port, name) {
         //. 接続
-        const p = new Promise(this.newSocketCallback)
+        const p = new Promise(this._newSocketCallback)
         p.then((event) => {
             this.client = event.target;
             console.log( '接続: ' + host + ':' + port + ':' + name);
@@ -83,9 +83,9 @@ class CHaserClient {
         const p = new Promise((resolve) => {
             this.websocketPromises.push(resolve);
             this.client.send("gr");
-            this.client.onmessage = this.messageCallback;
+            this.client.onmessage = this._messageCallback;
         })
-            .then(this.sendCallback);
+            .then(this._sendCallback);
         const values = this.response.split("")
         this.values = values.slice(1);
         return p;
@@ -97,25 +97,25 @@ class CHaserClient {
 
     _send(command) {
         log.log(command);
-        const p = new Promise(this.initCallback)
-            .then(this.sendCallback);
+        const p = new Promise(this._initCallback)
+            .then(this._sendCallback);
         return p;
     }
 
-    newSocketCallback(resolve, reject) {
+    _newSocketCallback(resolve, reject) {
         this.client = new WebSocket("ws://localhost:8080/ws");
         this.client.addEventListener('open', resolve);
         this.client.addEventListener('error', reject);
     }
 
-    initCallback(resolve) {
+    _initCallback(resolve) {
         this.websocketPromises.push(resolve);
         this.client.send(command);
-        this.client.onmessage = this.messageCallback;
+        this.client.onmessage = this._messageCallback;
     }
 
-    messageCallback(event) {
-        console.log('messageCallback: ' + event);
+    _messageCallback(event) {
+        console.log('_messageCallback: ' + event);
         if (event.data[0] == '0') {
             this.client.close();
             this._isGameSet = true;
@@ -131,8 +131,8 @@ class CHaserClient {
         this.websocketPromises = [];
     }
 
-    sendCallback() {
-        console.log('sendCallback: ' + this.response);
+    _sendCallback() {
+        console.log('_sendCallback: ' + this.response);
     }
 
     walk(direction) {
