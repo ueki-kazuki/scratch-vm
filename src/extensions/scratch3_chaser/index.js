@@ -296,30 +296,30 @@ class Scratch3CHaser {
                         }
                     }
                 },
-                {
-                    opcode: 'search',
-                    blockType: BlockType.COMMAND,
-                    text: '[DIRECTION] の直線方向を調べる',
-                    arguments: {
-                        DIRECTION: {
-                            type: ArgumentType.NUMBER,
-                            menu: 'direction4',
-                            defaultValue: CHaserDirection.UP
-                        }
-                    }
-                },
-                {
-                    opcode: 'look',
-                    blockType: BlockType.COMMAND,
-                    text: '[DIRECTION] の正方形範囲を調べる',
-                    arguments: {
-                        DIRECTION: {
-                            type: ArgumentType.NUMBER,
-                            menu: 'direction4',
-                            defaultValue: CHaserDirection.UP
-                        }
-                    }
-                },
+                // {
+                //     opcode: 'search',
+                //     blockType: BlockType.COMMAND,
+                //     text: '[DIRECTION] の直線方向を調べる',
+                //     arguments: {
+                //         DIRECTION: {
+                //             type: ArgumentType.NUMBER,
+                //             menu: 'direction4',
+                //             defaultValue: CHaserDirection.UP
+                //         }
+                //     }
+                // },
+                // {
+                //     opcode: 'look',
+                //     blockType: BlockType.COMMAND,
+                //     text: '[DIRECTION] の正方形範囲を調べる',
+                //     arguments: {
+                //         DIRECTION: {
+                //             type: ArgumentType.NUMBER,
+                //             menu: 'direction4',
+                //             defaultValue: CHaserDirection.UP
+                //         }
+                //     }
+                // },
                 {
                     opcode: 'getGameSet',
                     blockType: BlockType.REPORTER,
