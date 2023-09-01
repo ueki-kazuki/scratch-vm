@@ -234,9 +234,9 @@ class Scratch3CHaser {
                             defaultValue: '127.0.0.1'
                         },
                         PORT: {
-                            type: ArgumentType.NUMBER,
+                            type: ArgumentType.STRING,
                             menu: 'port',
-                            defaultValue: 2009
+                            defaultValue: '2009'
                         },
                         NAME: {
                             type: ArgumentType.STRING,
@@ -335,21 +335,21 @@ class Scratch3CHaser {
                 port: {
                     acceptReporters: false,
                     items: [
-                        {text:'Cool', value: 2009},
-                        {text:'Hot', value: 2010}
+                        {text:'Cool', value: '2009'},
+                        {text:'Hot', value: '2010'}
                     ]
                 },
                 cellType: {
                     acceptReporters: false,
-                    items: this.CELL_TYPE_MENU
+                    items: this._formatMenu(this.CELL_TYPE_MENU)
                 },
                 direction8: {
                     acceptReporters: false,
-                    items: this.DIRECTION_MENU8
+                    items: this._formatMenu(this.DIRECTION_MENU8)
                 },
                 direction4: {
                     acceptReporters: false,
-                    items: this.DIRECTION_MENU4
+                    items: this._formatMenu(this.DIRECTION_MENU4)
                 }
             }
         };
@@ -472,6 +472,36 @@ class Scratch3CHaser {
      */
     getBrowser () {
         return navigator.userAgent;
+    }
+
+    /**
+     * Formats menus into a format suitable for block menus, and loading previously
+     * saved projects:
+     * [
+     *   {
+     *    text: label,
+     *    value: index
+     *   },
+     *   {
+     *    text: label,
+     *    value: index
+     *   },
+     *   etc...
+     * ]
+     *
+     * @param {array} menu - a menu to format.
+     * @return {object} - a formatted menu as an object.
+     * @private
+     */
+    _formatMenu (menu) {
+        const m = [];
+        for (let i = 0; i < menu.length; i++) {
+            const obj = {};
+            obj.text = menu[i].text;
+            obj.value = menu[i].value.toString();
+            m.push(obj);
+        }
+        return m;
     }
 }
 
